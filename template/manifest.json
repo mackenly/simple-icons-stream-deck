@@ -1,0 +1,9 @@
+{
+    "Name": "Simple Icons Pack",
+    "Version": "1.0.0",
+    "Description": "Icons for a variety of brands and services.",
+    "Author": "Mackenly Jones",
+    "URL": "https://github.com/mackenly/simple-icons-stream-deck",
+    "Icon": "icon.svg",
+    "License": "license.txt"
+}
