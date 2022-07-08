@@ -7,6 +7,8 @@ import os
 import json
 import shutil
 import subprocess
+from tkinter import Tk
+from tkinter.filedialog import askdirectory
 from tqdm import tqdm
 
 not_allowed_chars = {
@@ -24,9 +26,21 @@ not_allowed_chars = {
   "ŧ": 't',
 }
 
-# Get the directories we want to use
-data_path = os.getcwd().replace("\\script", "\\input\\_data")
-icons_path = os.getcwd().replace("\\script", "\\input\\icons")
+# Hide the GUI
+Tk().withdraw()
+
+# Get the directory
+directory = askdirectory()
+
+# Extract the directories we want to use
+object = os.scandir(directory)
+data_path = ""
+icons_path = ""
+for i in object:
+    if i.name == "_data":
+        data_path = i.path
+    elif i.name == "icons":
+        icons_path = i.path
 
 # remove the old files
 try:
