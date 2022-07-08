@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <body>
+        <main>
+            <div id="file-selector">
+                <p>Utility for creating preview images.</p>
+                <input type="file" id="file" multiple>
+            </div>
+            <div class="grid-container"></div>
+        </main>
+        <style>
+            html {
+                background-color: rgb(16, 22, 45);
+                color: white;
+            }
+            .grid-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+                grid-gap: 20px;
+                padding: 75px 120px;
+            }
+            .grid-container img {
+                background-color: rgb(32, 36, 51);
+                fill: rgb(197, 197, 197);
+                border-radius: 10px;
+                padding: 10px;
+            }
+        </style>
+        <script>
+            const fileInput = document.getElementById('file');
+            fileInput.addEventListener('change', function(e) {
+                const files = e.target.files;
+                for (let i = 0; i < files.length; i++) {
+                    if (i >= 272) {
+                        break;
+                    } else if (i < 200) {
+                        continue;
+                    }
+                    const file = files[i];
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const data = e.target.result;
+                        const img = document.createElement('img');
+                        img.src = data;
+                        document.querySelector('.grid-container').appendChild(img);
+                    };
+                    document.getElementById("file-selector").style.display = "none";
+                    reader.readAsDataURL(file);
+                }
+            });
+        </script>
+    </body>
+</html>
