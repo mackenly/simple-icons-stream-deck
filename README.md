@@ -3,9 +3,9 @@
 
  Samples:
 
-<img src="./assets/screenshot-1.jpg" alt="Screenshot of some of the available icons." width="100%">
-<img src="./assets/screenshot-2.jpg" alt="Screenshot of some of the available icons." width="49.9%">
-<img src="./assets/screenshot-3.jpg" alt="Screenshot of some of the available icons." width="49.3%">
+<img src="./assets/previews/1-preview.png" alt="Screenshot of some of the available icons." width="100%">
+<img src="./assets/previews/2-preview.png" alt="Screenshot of some of the available icons." width="49.9%">
+<img src="./assets/previews/3-preview.png" alt="Screenshot of some of the available icons." width="49.3%">
 
  ## Installation
  **Icon Store:**

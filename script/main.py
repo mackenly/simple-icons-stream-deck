@@ -65,6 +65,12 @@ with open(license_out, "a") as license_file:
     license_file.write("\n\nSources for the icons used in this project:\n")
 print("Generated license.")
 
+# copy in preview images from the assets folder
+preview_template = os.getcwd().replace("\\script", "") + "\\assets\\previews"
+preview_out = os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\previews"
+shutil.copytree(preview_template, preview_out)
+print("Copied preview images.")
+
 # copy the manifest from the manifest template
 manifest_template = os.getcwd().replace("\\script", "") + "\\template\\manifest.json"
 manifest_out = os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\manifest.json"
