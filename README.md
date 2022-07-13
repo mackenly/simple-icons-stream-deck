@@ -6,10 +6,9 @@
 <img src="./assets/previews/1-preview.png" alt="Screenshot of some of the available icons." width="100%"> <img src="./assets/previews/2-preview.png" alt="Screenshot of some of the available icons." width="49.3%"> <img src="./assets/previews/3-preview.png" alt="Screenshot of some of the available icons." width="49.3%">
 
  ## Installation
- **Icon Store:**
-
- This icon pack is in the process of being submitted to the Stream Deck Icon store. For now, use the manual method outlined below...
-
+ **Icon Store:**<br><br>
+Install from the Stream Deck store either on [the web here](https://apps.elgato.com/icons/com.mackenly.simpleiconsstreamdeck) or by searching for "Simple Icons".
+<br><br>
  **Manual:**
 1. Download the latest streamDeckIconPack file from [releases](https://github.com/mackenly/simple-icons-stream-deck/releases).
 2. Run the file from your downloads folder.
