@@ -14,7 +14,7 @@ Install from the Stream Deck store either on [the web here](https://apps.elgato.
 2. Run the file from your downloads folder.
 3. Open the Stream Deck app and your icons should appear in the icon selector.
 
-## Contributing
+## Contributing and Copyright
 The icons in this icon pack are based on the [simple-icons/simple-icons](https://github.com/simple-icons/simple-icons) icons. To request a new icon, please open an issue on [here](https://github.com/simple-icons/simple-icons/issues) or to request the removal of your intellectual property please open an issue both in the [parent repository](https://github.com/simple-icons/simple-icons/issues) and in [this repository](https://github.com/mackenly/simple-icons-stream-deck/issues).
 
 If you would like to propose an improvement to the generation script please create an [issue here](https://github.com/mackenly/simple-icons-stream-deck/issues) first to discuss the changes.
