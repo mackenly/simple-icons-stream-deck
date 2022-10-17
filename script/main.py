@@ -12,18 +12,39 @@ from tkinter.filedialog import askdirectory
 from tqdm import tqdm
 
 not_allowed_chars = {
-  '+': 'plus',
-  '.': 'dot',
-  '&': 'and',
-  '/': '',
-  "đ": 'd',
-  "ħ": 'h',
-  "ı": 'i',
-  "ĸ": 'k',
-  "ŀ": 'l',
-  "ł": 'l',
-  "ß": 'ss',
-  "ŧ": 't',
+    "+": "plus",
+    "-": "",
+    ".": "dot",
+    "'": "",
+    "!": "",
+    "&": "and",
+    "_": "",
+    "/": "",
+    ":": "",
+    "°": "",
+    " ": "",
+    "đ": 'd',
+    "ã": 'a',
+    "é": 'e',
+    "ë": 'e',
+    "É": 'e',
+    "ü": 'u',
+    "Š": 's',
+    "ħ": 'h',
+    "ı": 'i',
+    "ĸ": 'k',
+    "ŀ": 'l',
+    "ł": 'l',
+    "ß": 'ss',
+    "ŧ": 't',
+}
+
+slugOverrides = {
+    "Sat.1": "sat1",
+    "Warner Bros.": "warnerbros",
+    "Ferrari N.V.": "ferrarinv",
+    "del.icio.us": "delicious",
+    "Dassault Systèmes": "dassaultsystemes",
 }
 
 # Hide the GUI
@@ -94,11 +115,16 @@ with open(data_path + "\\simple-icons.json", encoding="utf8") as json_file:
                ascii=False, ncols=75):
         # check to see if title contains characters that are in the not allowed list
         normalized_title = ""
-        for j in i["title"]:
-            if j in not_allowed_chars:
-                normalized_title += not_allowed_chars[j].lower()
-            else:
-                normalized_title += j.lower()
+
+        # check to see if title is in the slugOverrides list, if so use that
+        if i["title"] in slugOverrides:
+            normalized_title = slugOverrides[i["title"]].lower()
+        else:
+            for j in i["title"]:
+                if j in not_allowed_chars:
+                    normalized_title += not_allowed_chars[j].lower()
+                else:
+                    normalized_title += j.lower()
 
         try:
             # copy icon to the icons folder
@@ -107,6 +133,7 @@ with open(data_path + "\\simple-icons.json", encoding="utf8") as json_file:
             shutil.copy(old_path, new_path)
         except FileNotFoundError:
             # skip if icon doesn't exist
+            print("Icon not found for " + i["title"])
             continue
 
         # add the icon to the out data
@@ -122,6 +149,7 @@ with open(data_path + "\\simple-icons.json", encoding="utf8") as json_file:
         # edit the icon with the correct color
         with open(os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icons\\" + normalized_title + ".svg", "r") as icon_file:
             icon_data = icon_file.read()
+            icon_data = icon_data.replace("<svg fill=\"#FF0000\" role=\"img\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">", "<svg fill=\"#" + i["hex"] + "\" role=\"img\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"  style=\"position:relative;height:576px;width:576px;\">")
             icon_data = icon_data.replace("<svg ", "<svg fill=\"#" + i["hex"] + "\" ")
             with open(os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icons\\" + normalized_title + ".svg", "w") as icon_out:
                 icon_out.write(icon_data)
