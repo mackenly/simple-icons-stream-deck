@@ -59,13 +59,12 @@ if len(sys.argv) > 1:
     # check to see if the directory is a file or a folder
     if os.path.isfile(directory):
         print("Error: " + directory + " is a file, not a directory.")
-        quit()
+        sys.exit("File input error.")
     elif not os.path.isdir(directory):
         print("Error: " + directory + " is not a valid directory.")
-        quit()
+        sys.exit("File input error.")
     else:
         print("Selected directory: " + directory)
-        quit()
 else:
     # Hide the GUI
     Tk().withdraw()
@@ -73,7 +72,6 @@ else:
     # Get the directory
     directory = askdirectory()
     print("Selected directory: " + directory)
-    quit()
 
 # Extract the directories we want to use
 object = os.scandir(directory)
@@ -207,3 +205,4 @@ if output[0] == 0:
 else:
     print("Error!")
     print(output[1])
+    sys.exit("Error generating icon file.")

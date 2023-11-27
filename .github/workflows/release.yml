@@ -29,6 +29,7 @@ jobs:
         name: Build Icon Pack
         timeout-minutes: 10
         needs: version
+        if: ${{ needs.version.outputs.LATEST_TAG_NAME != needs.version.outputs.PREVIOUS_VERSION }}
         runs-on: windows-latest
         steps:
             - name: Checkout Repo
@@ -61,7 +62,7 @@ jobs:
     release:
         name: Create new Release
         timeout-minutes: 5
-        needs: build
+        needs: [version, build]
         if: ${{ needs.version.outputs.LATEST_TAG_NAME != needs.version.outputs.PREVIOUS_VERSION }}
         runs-on: ubuntu-latest
         steps:
