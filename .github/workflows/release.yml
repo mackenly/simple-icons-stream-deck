@@ -6,8 +6,8 @@ on:
         - cron: '0 9 * * 1'
 jobs:
     version:
-        name: Increment Version
-        timeout-minutes: 10
+        name: Get versions and meta
+        timeout-minutes: 5
         runs-on: ubuntu-latest
         outputs:
             NEW_VERSION: ${{ steps.incrementVersion.outputs.NEW_VERSION }}
@@ -26,28 +26,12 @@ jobs:
                 echo "latest_release_name=$(echo "$simple_icons_release_data" | jq -r '.name')" >> $GITHUB_OUTPUT
                 echo "previous_version=$(jq -r '.Version' template/manifest.json)" >> $GITHUB_OUTPUT
 
-            - name: Update manifest.json version and README.md
-              id: incrementVersion
-              if: ${{ steps.getSimpleIconsVersion.outputs.previous_version != steps.getSimpleIconsVersion.outputs.latest_tag_name }}
-              run: |
-                sed -i "s/\"Version\": \".*\"/\"Version\": \"${{ steps.getSimpleIconsVersion.outputs.latest_tag_name }}\"/g" template/manifest.json
-                sed -i 's/${{ steps.getSimpleIconsVersion.outputs.previous_version }}/${{ steps.getSimpleIconsVersion.outputs.latest_tag_name }}/g' README.md
-
-            - name: Show changed files for testing
-              run: |
-                cat template/manifest.json
-                cat README.md
-
     build:
         name: Build Icon Pack
+        timeout-minutes: 10
         needs: version
         runs-on: windows-latest
         steps:
-            - env:
-                NEW_VERSION: ${{ needs.version.outputs.NEW_VERSION }}
-              run: |
-                echo "NEW_VERSION=${{ env.NEW_VERSION }}" >> $GITHUB_ENV
-
             - name: Checkout Repo
               uses: actions/checkout@v3
 
@@ -58,12 +42,44 @@ jobs:
                 echo "LATEST_RELEASE_NAME=${{ needs.version.outputs.LATEST_RELEASE_NAME }}"
                 echo "PREVIOUS_VERSION=${{ needs.version.outputs.PREVIOUS_VERSION }}"
 
+            - name: Download latest Simple Icons release
+              run: |
+                $url = Invoke-RestMethod -Uri "https://api.github.com/repos/simple-icons/simple-icons/releases/latest" | Select -ExpandProperty assets | Select -First 1 | Select -ExpandProperty browser_download_url
+                curl -L $url -o simple-icons.zip
+              shell: pwsh
+
+            - name: Extract Simple Icons
+              run: 7z x simple-icons.zip -o./simple-icons
+              shell: cmd
+
+            - name: Install python packages
+              run: |
+                python -m pip install --upgrade pip
+                pip install -r requirements.txt
+
+            - name: Run script/main.py with the latest Simple Icons release
+              run: python script/main.py ./simple-icons ${{ needs.version.outputs.LATEST_TAG_NAME }}
+              shell: pwsh
+
     release:
         name: Create new Release
+        timeout-minutes: 10
         needs: build
         if: ${{ needs.version.outputs.NEW_VERSION != needs.version.outputs.PREVIOUS_VERSION }}
         runs-on: ubuntu-latest
         steps:
-            - name: Do nothing
+            - name: Checkout Repo
+              uses: actions/checkout@v3
+
+            - name: Update manifest.json template version and README.md
               run: |
-                echo "TODO: Create a new release with the new version number"
+                sed -i "s/\"Version\": \".*\"/\"Version\": \"${{ needs.version.outputs.NEW_VERSION }}\"/g" template/manifest.json
+                sed -i 's/${{ needs.version.outputs.PREVIOUS_VERSION }}/${{ needs.version.outputs.NEW_VERSION }}/g' README.md
+
+            - name: Show changed files for testing
+              run: |
+                cat template/manifest.json
+                cat README.md
+
+            # TODO: Add a step to commit the changes to manifest.json and README.md
+            # Create a new release with the new version number
