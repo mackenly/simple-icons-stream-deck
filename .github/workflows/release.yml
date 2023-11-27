@@ -40,6 +40,7 @@ jobs:
                 echo "LATEST_TAG_NAME=${{ needs.version.outputs.LATEST_TAG_NAME }}"
                 echo "LATEST_RELEASE_NAME=${{ needs.version.outputs.LATEST_RELEASE_NAME }}"
                 echo "PREVIOUS_VERSION=${{ needs.version.outputs.PREVIOUS_VERSION }}"
+                dir
 
             - name: Download latest Simple Icons release
               run: |
