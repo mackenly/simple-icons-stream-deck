@@ -7,6 +7,7 @@ import os
 import json
 import shutil
 import subprocess
+import sys
 from tkinter import Tk
 from tkinter.filedialog import askdirectory
 from tqdm import tqdm
@@ -47,11 +48,32 @@ slugOverrides = {
     "Dassault Systèmes": "dassaultsystemes",
 }
 
-# Hide the GUI
-Tk().withdraw()
+# If at least one cli parameter is set, use that as the directory
+if len(sys.argv) > 1:
+    directory = sys.argv[1]
+    # get the current working directory
+    cwd = os.getcwd()
+    # check to see if the directory is relative or absolute
+    if directory[0] == ".":
+        directory = cwd + directory[1:]
+    # check to see if the directory is a file or a folder
+    if os.path.isfile(directory):
+        print("Error: " + directory + " is a file, not a directory.")
+        quit()
+    elif not os.path.isdir(directory):
+        print("Error: " + directory + " is not a valid directory.")
+        quit()
+    else:
+        print("Selected directory: " + directory)
+        quit()
+else:
+    # Hide the GUI
+    Tk().withdraw()
 
-# Get the directory
-directory = askdirectory()
+    # Get the directory
+    directory = askdirectory()
+    print("Selected directory: " + directory)
+    quit()
 
 # Extract the directories we want to use
 object = os.scandir(directory)
@@ -96,13 +118,26 @@ print("Copied preview images.")
 manifest_template = os.getcwd().replace("\\script", "") + "\\template\\manifest.json"
 manifest_out = os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\manifest.json"
 shutil.copy(manifest_template, manifest_out)
-print("Generated manifest.")
+print("Copied manifest.")
+
+# if two parameters are passed, use the second as the version. Otherwise, use the template version as is
+if len(sys.argv) > 2:
+    # edit the manifest with the correct version
+    with open(manifest_out, "r") as manifest_file:
+        manifest_file_data = manifest_file.read()
+        # Get the template version from the manifest which looks like this: "Version": "1.0.0"
+        template_version = manifest_file_data.split("\"Version\": \"")[1].split("\"")[0]
+        # Replace the current version with the new version
+        manifest_file_data = manifest_file_data.replace(template_version, sys.argv[2])
+        with open(manifest_out, "w") as manifest_out_file:
+            manifest_out_file.write(manifest_file_data)
+    print("Updated manifest version to " + sys.argv[2])
 
 # copy the icon from the icon template
 icon_template = os.getcwd().replace("\\script", "") + "\\template\\icon.svg"
 icon_out = os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icon.svg"
 shutil.copy(icon_template, icon_out)
-print("Generated icon.")
+print("Copied icon.")
 
 # import the json data
 with open(data_path + "\\simple-icons.json", encoding="utf8") as json_file:
