@@ -89,6 +89,8 @@ try:
     print("Removed old files.")
 except FileNotFoundError:
     print("No old files to remove, continuing...")
+except PermissionError:
+    print("Permission error, continuing...")
 
 # create directories
 os.mkdir(os.getcwd().replace("\\script", "\\out"))
