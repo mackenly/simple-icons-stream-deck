@@ -1,7 +1,6 @@
 name: Release a New Version of Simple Icons Streamdeck
 on:
     push:
-    pull_request:
     workflow_dispatch:
     schedule:
         - cron: '0 9 * * 1'
