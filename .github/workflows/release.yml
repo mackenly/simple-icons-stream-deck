@@ -61,3 +61,12 @@ jobs:
             - name: Echo the version # to test variable passing to windows runner
               run: |
                 echo "NEW_VERSION=${{ env.NEW_VERSION }}"
+
+    release:
+        name: Create new Release
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Do nothing
+              run: |
+                echo "TODO: Create a new release with the new version number"
