@@ -93,9 +93,9 @@ except PermissionError:
     print("Permission error, continuing...")
 
 # create directories
-os.mkdir(os.getcwd().replace("\\script", "\\out"))
-os.mkdir(os.getcwd().replace("\\script", "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack"))
-os.mkdir(os.getcwd().replace("\\script", "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icons"))
+os.makedirs(os.getcwd().replace("\\script", "\\out"), exist_ok=True)
+os.makedirs(os.getcwd().replace("\\script", "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack"), exist_ok=True)
+os.makedirs(os.getcwd().replace("\\script", "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icons"), exist_ok=True)
 print("Created directories.")
 
 # copy the license from the license template
