@@ -1,6 +1,8 @@
 # Simple Icons Stream Deck
  Elgato Stream Deck icons pack containing 2000+ Logos for common brands and tools. Based on [Simple Icons](https://simpleicons.org/).
 
+ Updated to Simple Icons Version: 1.0.2
+
  Samples:
 
 <img src="./assets/previews/1-preview.png" alt="Screenshot of some of the available icons." width="100%"> <img src="./assets/previews/2-preview.png" alt="Screenshot of some of the available icons." width="49.3%"> <img src="./assets/previews/3-preview.png" alt="Screenshot of some of the available icons." width="49.3%">

@@ -11,39 +11,32 @@ jobs:
         runs-on: ubuntu-latest
         outputs:
             NEW_VERSION: ${{ steps.incrementVersion.outputs.NEW_VERSION }}
+            LATEST_TAG_NAME: ${{ steps.getSimpleIconsVersion.outputs.latest_tag_name }}
+            LATEST_RELEASE_NAME: ${{ steps.getSimpleIconsVersion.outputs.latest_release_name }}
+            PREVIOUS_VERSION: ${{ steps.getSimpleIconsVersion.outputs.previous_version }}
         steps:
             - name: Checkout Repo
               uses: actions/checkout@v3
 
-            - name: Read version from manifest.json
-              id: manifestJson
-              uses: RadovanPelka/github-action-json@main
-              with:
-                path: 'template/manifest.json'
-
-            - name: Increment version number
-              id: incrementVersion
+            - name: Get Simple Icons version and release name plus previous version of icon pack
+              id: getSimpleIconsVersion
               run: |
-                VERSION=$(echo "${{ steps.packageJson.outputs.version }}")
-                IFS='.' read -ra VER <<< "$VERSION"
-                ((VER[2]++))
-                echo "NEW_VERSION=${VER[0]}.${VER[1]}.${VER[2]}" >> $GITHUB_OUTPUT
-            
-            - name: Set version in manifest.json
-              id: packageJson
-              uses: RadovanPelka/github-action-json@main
-              with:
-                path: 'template/manifest.json'
-                replaceWith: |
-                    {
-                        "Version": "${{ steps.incrementVersion.outputs.NEW_VERSION }}"
-                    }
+                simple_icons_release_data="$(curl --retry 5 -s https://api.github.com/repos/simple-icons/simple-icons/releases/latest)"
+                echo "latest_tag_name=$(echo "$simple_icons_release_data" | jq -r '.tag_name')" >> $GITHUB_OUTPUT
+                echo "latest_release_name=$(echo "$simple_icons_release_data" | jq -r '.name')" >> $GITHUB_OUTPUT
+                echo "previous_version=$(jq -r '.Version' template/manifest.json)" >> $GITHUB_OUTPUT
 
-            - name: Show version file
+            - name: Update manifest.json version and README.md
+              id: incrementVersion
+              if: ${{ steps.getSimpleIconsVersion.outputs.previous_version != steps.getSimpleIconsVersion.outputs.latest_tag_name }}
+              run: |
+                sed -i "s/\"Version\": \".*\"/\"Version\": \"${{ steps.getSimpleIconsVersion.outputs.latest_tag_name }}\"/g" template/manifest.json
+                sed -i "s/\"Version\": \".*\"/\"Version\": \"${{ steps.getSimpleIconsVersion.outputs.latest_tag_name }}\"/g" README.md
+
+            - name: Show changed files for testing
               run: |
                 cat template/manifest.json
-
-            # TODO: Commit and push changes
+                cat README.md
 
     build:
         name: Build Icon Pack
@@ -58,13 +51,17 @@ jobs:
             - name: Checkout Repo
               uses: actions/checkout@v3
 
-            - name: Echo the version # to test variable passing to windows runner
+            - name: Echo variables # to test variable passing to windows runner
               run: |
                 echo "NEW_VERSION=${{ env.NEW_VERSION }}"
+                echo "LATEST_TAG_NAME=${{ needs.version.outputs.LATEST_TAG_NAME }}"
+                echo "LATEST_RELEASE_NAME=${{ needs.version.outputs.LATEST_RELEASE_NAME }}"
+                echo "PREVIOUS_VERSION=${{ needs.version.outputs.PREVIOUS_VERSION }}"
 
     release:
         name: Create new Release
         needs: build
+        if: ${{ needs.version.outputs.NEW_VERSION != needs.version.outputs.PREVIOUS_VERSION }}
         runs-on: ubuntu-latest
         steps:
             - name: Do nothing
