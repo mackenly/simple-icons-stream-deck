@@ -10,7 +10,6 @@ jobs:
         timeout-minutes: 5
         runs-on: ubuntu-latest
         outputs:
-            NEW_VERSION: ${{ steps.incrementVersion.outputs.NEW_VERSION }}
             LATEST_TAG_NAME: ${{ steps.getSimpleIconsVersion.outputs.latest_tag_name }}
             LATEST_RELEASE_NAME: ${{ steps.getSimpleIconsVersion.outputs.latest_release_name }}
             PREVIOUS_VERSION: ${{ steps.getSimpleIconsVersion.outputs.previous_version }}
@@ -37,7 +36,6 @@ jobs:
 
             - name: Echo variables # to test variable passing to windows runner
               run: |
-                echo "NEW_VERSION=${{ env.NEW_VERSION }}"
                 echo "LATEST_TAG_NAME=${{ needs.version.outputs.LATEST_TAG_NAME }}"
                 echo "LATEST_RELEASE_NAME=${{ needs.version.outputs.LATEST_RELEASE_NAME }}"
                 echo "PREVIOUS_VERSION=${{ needs.version.outputs.PREVIOUS_VERSION }}"
@@ -57,14 +55,14 @@ jobs:
                 pip install -r requirements.txt
 
             - name: Run script/main.py with the latest Simple Icons release
-              run: python script/main.py ./simple-icons/simple-icons/master ${{ needs.version.outputs.LATEST_TAG_NAME }}
+              run: python script/main.py ./simple-icons/simple-icons-master ${{ needs.version.outputs.LATEST_TAG_NAME }}
               shell: pwsh
 
     release:
         name: Create new Release
-        timeout-minutes: 10
+        timeout-minutes: 5
         needs: build
-        if: ${{ needs.version.outputs.NEW_VERSION != needs.version.outputs.PREVIOUS_VERSION }}
+        if: ${{ needs.version.outputs.LATEST_TAG_NAME != needs.version.outputs.PREVIOUS_VERSION }}
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repo
@@ -72,8 +70,8 @@ jobs:
 
             - name: Update manifest.json template version and README.md
               run: |
-                sed -i "s/\"Version\": \".*\"/\"Version\": \"${{ needs.version.outputs.NEW_VERSION }}\"/g" template/manifest.json
-                sed -i 's/${{ needs.version.outputs.PREVIOUS_VERSION }}/${{ needs.version.outputs.NEW_VERSION }}/g' README.md
+                sed -i "s/\"Version\": \".*\"/\"Version\": \"${{ needs.version.outputs.LATEST_TAG_NAME }}\"/g" template/manifest.json
+                sed -i 's/${{ needs.version.outputs.PREVIOUS_VERSION }}/${{ needs.version.outputs.LATEST_TAG_NAME }}/g' README.md
 
             - name: Show changed files for testing
               run: |
