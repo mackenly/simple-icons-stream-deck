@@ -1,4 +1,4 @@
-name: Release a New Version of Simple Icons Streamdeck
+name: Create Release
 on:
     push:
     workflow_dispatch:
@@ -31,7 +31,7 @@ jobs:
               if: ${{ steps.getSimpleIconsVersion.outputs.previous_version != steps.getSimpleIconsVersion.outputs.latest_tag_name }}
               run: |
                 sed -i "s/\"Version\": \".*\"/\"Version\": \"${{ steps.getSimpleIconsVersion.outputs.latest_tag_name }}\"/g" template/manifest.json
-                sed -i "s/\"Version\": \".*\"/\"Version\": \"${{ steps.getSimpleIconsVersion.outputs.latest_tag_name }}\"/g" README.md
+                sed -i 's/${{ steps.getSimpleIconsVersion.outputs.previous_version }}/${{ steps.getSimpleIconsVersion.outputs.latest_tag_name }}/g' README.md
 
             - name: Show changed files for testing
               run: |
