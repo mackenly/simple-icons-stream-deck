@@ -5,10 +5,12 @@ on:
     schedule:
         - cron: '0 9 * * 1'
 jobs:
-    build:
-        name: Release a New Version of Simple Icons Streamdeck
+    version:
+        name: Increment Version
         timeout-minutes: 10
-        runs-on: windows-latest
+        runs-on: ubuntu-latest
+        outputs:
+            NEW_VERSION: ${{ steps.incrementVersion.outputs.NEW_VERSION }}
         steps:
             - name: Checkout Repo
               uses: actions/checkout@v3
@@ -20,6 +22,7 @@ jobs:
                 path: 'template/manifest.json'
 
             - name: Increment version number
+              id: incrementVersion
               run: |
                 VERSION=$(echo "${{ steps.packageJson.outputs.version }}")
                 IFS='.' read -ra VER <<< "$VERSION"
@@ -36,6 +39,25 @@ jobs:
                         "Version": "${{ steps.incrementVersion.outputs.NEW_VERSION }}"
                     }
 
-            - name: Echo version file
+            - name: Show version file
               run: |
                 cat template/manifest.json
+
+            # TODO: Commit and push changes
+
+    build:
+        name: Build Icon Pack
+        needs: version
+        runs-on: windows-latest
+        steps:
+            - env:
+                NEW_VERSION: ${{ needs.version.outputs.NEW_VERSION }}
+              run: |
+                echo "NEW_VERSION=${{ env.NEW_VERSION }}" >> $GITHUB_ENV
+
+            - name: Checkout Repo
+              uses: actions/checkout@v3
+
+            - name: Echo the version # to test variable passing to windows runner
+              run: |
+                echo "NEW_VERSION=${{ env.NEW_VERSION }}"
