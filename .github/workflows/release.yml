@@ -25,7 +25,7 @@ jobs:
                 VERSION=$(echo "${{ steps.packageJson.outputs.version }}")
                 IFS='.' read -ra VER <<< "$VERSION"
                 ((VER[2]++))
-                echo "::set-output name=NEW_VERSION::${VER[0]}.${VER[1]}.${VER[2]}"
+                echo "NEW_VERSION=${VER[0]}.${VER[1]}.${VER[2]}" >> $GITHUB_OUTPUT
             
             - name: Set version in manifest.json
               id: packageJson
