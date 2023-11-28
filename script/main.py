@@ -6,6 +6,7 @@
 import os
 import json
 import shutil
+import stat
 import subprocess
 import sys
 from tkinter import Tk
@@ -83,9 +84,16 @@ for i in object:
     elif i.name == "icons":
         icons_path = i.path
 
+
+def remove_readonly(func, path, _):
+    """ Clear the readonly bit and reattempt the removal """
+    os.chmod(path, stat.S_IWRITE)
+    func(path)
+
+
 # remove the old files
 try:
-    shutil.rmtree(os.getcwd().replace("\\script", "\\out"))
+    shutil.rmtree(os.getcwd().replace("\\script", "\\out"), onerror=remove_readonly)
     print("Removed old files.")
 except FileNotFoundError:
     print("No old files to remove, continuing...")
