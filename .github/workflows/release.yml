@@ -25,6 +25,31 @@ jobs:
                 echo "latest_release_name=$(echo "$simple_icons_release_data" | jq -r '.name')" >> $GITHUB_OUTPUT
                 echo "previous_version=$(jq -r '.Version' template/manifest.json)" >> $GITHUB_OUTPUT
 
+    test-build:
+      name: Build Icon Pack (Test on Ubuntu)
+      timeout-minutes: 10
+      needs: version
+      if: ${{ needs.version.outputs.LATEST_TAG_NAME != needs.version.outputs.PREVIOUS_VERSION }}
+      runs-on: ubuntu-latest
+      steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v3
+
+            - name: Install python packages
+              run: |
+                python -m pip install --upgrade pip
+                pip install -r requirements.txt
+
+            - name: Run script/main.py with the latest Simple Icons release
+              run: python script/main.py ./simple-icons/simple-icons-master ${{ needs.version.outputs.LATEST_TAG_NAME }}
+              shell: pwsh
+
+            - name: Show changed files for testing
+              run: |
+                ll
+                cd script
+                ll
+
     build:
         name: Build Icon Pack
         timeout-minutes: 10
