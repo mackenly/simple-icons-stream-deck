@@ -93,9 +93,12 @@ except FileNotFoundError:
     print("No old files to remove, continuing...")
 
 # create directories
-os.mkdir(os.getcwd().replace("\\script", "\\out"))
-os.mkdir(os.getcwd().replace("\\script", "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack"))
-os.mkdir(os.getcwd().replace("\\script", "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icons"))
+#os.mkdir(os.getcwd().replace("\\script", "\\out"))
+os.mkdir("../out")
+#os.mkdir(os.getcwd().replace("\\script", "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack"))
+os.mkdir("../out/com.mackenly.simpleiconsstreamdeck.sdIconPack")
+#os.mkdir(os.getcwd().replace("\\script", "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icons"))
+os.mkdir("../out/com.mackenly.simpleiconsstreamdeck.sdIconPack/icons")
 print("Created directories.")
 
 # copy the license from the license template
