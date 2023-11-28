@@ -84,12 +84,10 @@ for i in object:
     elif i.name == "icons":
         icons_path = i.path
 
-# fix permissions
-os.chmod(os.getcwd().replace("\\script", "\\out"), stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
-
 # remove the old files
 try:
-    shutil.rmtree(os.getcwd().replace("\\script", "\\out"))
+    # shutil.rmtree(os.getcwd().replace("\\script", "\\out"))
+    shutil.rmtree("../out")
     print("Removed old files.")
 except FileNotFoundError:
     print("No old files to remove, continuing...")
