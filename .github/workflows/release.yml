@@ -60,6 +60,12 @@ jobs:
               run: python script/main.py ./simple-icons/simple-icons-master ${{ needs.version.outputs.LATEST_TAG_NAME }}
               shell: pwsh
 
+            - name: Show changed files for testing
+              run: |
+                dir
+                cd out
+                dir
+
     release:
         name: Create new Release
         timeout-minutes: 5
