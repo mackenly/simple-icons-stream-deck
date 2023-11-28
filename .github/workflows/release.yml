@@ -56,12 +56,6 @@ jobs:
                 python -m pip install --upgrade pip
                 pip install -r requirements.txt
 
-            - name: Permissions
-              run: |
-                icacls simple-icons /grant:r ${{ github.actor }}:F /T
-                icacls simple-icons\simple-icons-master /grant:r ${{ github.actor }}:F /T
-              shell: cmd
-
             - name: Run script/main.py with the latest Simple Icons release
               run: python script/main.py ./simple-icons/simple-icons-master ${{ needs.version.outputs.LATEST_TAG_NAME }}
               shell: pwsh
