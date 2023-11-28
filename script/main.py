@@ -6,11 +6,10 @@
 import os
 import json
 import shutil
-import stat
 import subprocess
 import sys
-from tkinter import Tk
-from tkinter.filedialog import askdirectory
+#from tkinter import Tk
+#from tkinter.filedialog import askdirectory
 from tqdm import tqdm
 
 not_allowed_chars = {
@@ -68,11 +67,13 @@ if len(sys.argv) > 1:
         print("Selected directory: " + directory)
 else:
     # Hide the GUI
+    """
     Tk().withdraw()
 
     # Get the directory
     directory = askdirectory()
     print("Selected directory: " + directory)
+    """
 
 # Extract the directories we want to use
 object = os.scandir(directory)
