@@ -49,7 +49,7 @@ jobs:
               shell: pwsh
 
             - name: Extract Simple Icons
-              run: 7z x simple-icons.zip -o./simple-icons
+              run: 7z x simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}.zip -o./simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}
               shell: cmd
 
             - name: Install python packages
@@ -58,7 +58,7 @@ jobs:
                 pip install -r requirements.txt
 
             - name: Run script/main.py with the latest Simple Icons release
-              run: python script/main.py ./simple-icons/simple-icons-master ${{ needs.version.outputs.LATEST_TAG_NAME }}
+              run: python script/main.py ./simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}/simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }} ${{ needs.version.outputs.LATEST_TAG_NAME }}
               shell: pwsh
 
             - name: Show changed files for testing
