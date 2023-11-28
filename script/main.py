@@ -96,11 +96,11 @@ os.mkdir("../out")
 os.mkdir("../out/com.mackenly.simpleiconsstreamdeck.sdIconPack")
 os.mkdir("../out/com.mackenly.simpleiconsstreamdeck.sdIconPack/icons")
 print("Created directories.")
+quit()
 
 # copy the license from the license template
 license_template = os.getcwd().replace("\\script", "") + "\\template\\license.txt"
 license_out = os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\license.txt"
-os.mkdir(license_out)
 shutil.copy(license_template, license_out)
 
 # append icon title and source to the license
