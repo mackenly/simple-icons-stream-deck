@@ -46,7 +46,7 @@ jobs:
 
             - name: Download latest Simple Icons release
               run: |
-                Invoke-WebRequest -Uri "https://github.com/simple-icons/simple-icons/archive/refs/heads/master.zip" -OutFile "simple-icons.zip"
+                Invoke-WebRequest -Uri "https://github.com/simple-icons/simple-icons/archive/refs/tags/${{ needs.version.outputs.LATEST_TAG_NAME }}.zip" -OutFile "simple-icons.zip"
               shell: pwsh
 
             - name: Extract Simple Icons
