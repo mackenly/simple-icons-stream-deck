@@ -57,7 +57,7 @@ jobs:
                 pip install -r requirements.txt
 
             - name: Run script/main.py with the latest Simple Icons release
-              run: python script/main.py ./simple-icons/simple-icons-master ${{ needs.version.outputs.LATEST_TAG_NAME }}
+              run: runas /user:administrator "python script/main.py ./simple-icons/simple-icons-master ${{ needs.version.outputs.LATEST_TAG_NAME }}"
               shell: pwsh
 
     release:
