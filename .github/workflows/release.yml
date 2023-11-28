@@ -63,7 +63,7 @@ jobs:
             - name: Show changed files for testing
               run: |
                 dir
-                cd out
+                cd script
                 dir
 
     release:
