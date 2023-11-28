@@ -8,8 +8,8 @@ import json
 import shutil
 import subprocess
 import sys
-#from tkinter import Tk
-#from tkinter.filedialog import askdirectory
+from tkinter import Tk
+from tkinter.filedialog import askdirectory
 from tqdm import tqdm
 
 not_allowed_chars = {
@@ -33,11 +33,13 @@ not_allowed_chars = {
     "Š": 's',
     "ħ": 'h',
     "ı": 'i',
+    "Î": 'i',
     "ĸ": 'k',
     "ŀ": 'l',
     "ł": 'l',
     "ß": 'ss',
     "ŧ": 't',
+    "Ż": 'z',
 }
 
 slugOverrides = {
@@ -49,7 +51,6 @@ slugOverrides = {
 }
 
 # If at least one cli parameter is set, use that as the directory
-"""
 if len(sys.argv) > 1:
     directory = sys.argv[1]
     # get the current working directory
@@ -82,7 +83,7 @@ for i in object:
         data_path = i.path
     elif i.name == "icons":
         icons_path = i.path
-"""
+
 # remove the old files
 try:
     shutil.rmtree(os.getcwd().replace("\\script", "\\out"))
@@ -189,7 +190,17 @@ with open(data_path + "\\simple-icons.json", encoding="utf8") as json_file:
 
         # append icon title and source to the license
         with open(license_out, "a") as license_file:
-            license_file.write("\n\n" + i["title"] + "\n" + i["source"])
+            try:
+                license_file.write("\n\n" + i["title"] + "\n" + i["source"])
+            except UnicodeEncodeError:
+                # replace the unicode characters in the title
+                temp_title = ""
+                for j in i["title"]:
+                    if j in not_allowed_chars:
+                        temp_title += not_allowed_chars[j].lower()
+                    else:
+                        temp_title += j
+                license_file.write("\n\n" + temp_title + "\n" + i["source"])
 
     # write the json file
     with open(os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icons.json", "w") as out_file:
@@ -197,6 +208,7 @@ with open(data_path + "\\simple-icons.json", encoding="utf8") as json_file:
 
 
 # start the distribution tools
+print("Starting distribution tool...")
 output = subprocess.getstatusoutput(f'.\DistributionTool.exe -b -i ..\out\com.mackenly.simpleiconsstreamdeck.sdIconPack -o ..\out')
 shutil.rmtree(os.getcwd().replace("\\script", "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack"))
 
