@@ -49,6 +49,7 @@ slugOverrides = {
 }
 
 # If at least one cli parameter is set, use that as the directory
+"""
 if len(sys.argv) > 1:
     directory = sys.argv[1]
     # get the current working directory
@@ -67,14 +68,11 @@ if len(sys.argv) > 1:
         print("Selected directory: " + directory)
 else:
     # Hide the GUI
-    """
     Tk().withdraw()
 
     # Get the directory
     directory = askdirectory()
     print("Selected directory: " + directory)
-    """
-
 # Extract the directories we want to use
 object = os.scandir(directory)
 data_path = ""
@@ -84,7 +82,7 @@ for i in object:
         data_path = i.path
     elif i.name == "icons":
         icons_path = i.path
-
+"""
 # remove the old files
 try:
     shutil.rmtree(os.getcwd().replace("\\script", "\\out"))
