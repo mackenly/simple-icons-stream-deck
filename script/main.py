@@ -86,24 +86,21 @@ for i in object:
 
 # remove the old files
 try:
-    # shutil.rmtree(os.getcwd().replace("\\script", "\\out"))
     shutil.rmtree("../out")
     print("Removed old files.")
 except FileNotFoundError:
     print("No old files to remove, continuing...")
 
 # create directories
-#os.mkdir(os.getcwd().replace("\\script", "\\out"))
 os.mkdir("../out")
-#os.mkdir(os.getcwd().replace("\\script", "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack"))
 os.mkdir("../out/com.mackenly.simpleiconsstreamdeck.sdIconPack")
-#os.mkdir(os.getcwd().replace("\\script", "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icons"))
 os.mkdir("../out/com.mackenly.simpleiconsstreamdeck.sdIconPack/icons")
 print("Created directories.")
 
 # copy the license from the license template
 license_template = os.getcwd().replace("\\script", "") + "\\template\\license.txt"
 license_out = os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\license.txt"
+open(license_out, "w").close()
 shutil.copy(license_template, license_out)
 
 # append icon title and source to the license
