@@ -31,6 +31,8 @@ jobs:
         needs: version
         if: ${{ needs.version.outputs.LATEST_TAG_NAME != needs.version.outputs.PREVIOUS_VERSION }}
         runs-on: windows-latest
+        permissions:
+          contents: write
         steps:
             - name: Checkout Repo
               uses: actions/checkout@v3
