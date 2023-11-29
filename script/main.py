@@ -1,8 +1,3 @@
-# Filename: main.py
-# Created By: Mackenly Jones on 07/07/2022
-# Web: mackenly.com
-# Twitter: @mackenlyjones
-
 import os
 import json
 import shutil
@@ -101,10 +96,8 @@ print("Created directories.")
 
 # copy the license from the license template
 license_template = os.getcwd().replace("\\script", "") + "\\template\\license.txt"
-os.chmod(license_template, 0o777)
 license_out = os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\license.txt"
 shutil.copy(license_template, license_out)
-os.chmod(license_out, 0o777)
 
 # append icon title and source to the license
 with open(license_out, "a") as license_file:

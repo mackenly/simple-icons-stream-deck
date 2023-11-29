@@ -58,7 +58,10 @@ jobs:
                 pip install -r requirements.txt
 
             - name: Run script/main.py with the latest Simple Icons release
-              run: python script/main.py ./simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}/simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }} ${{ needs.version.outputs.LATEST_TAG_NAME }}
+              run: |
+                cd script
+                python main.py ./simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}/simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }} ${{ needs.version.outputs.LATEST_TAG_NAME }}
+                cd ..
               shell: pwsh
 
             - name: Show changed files for testing
