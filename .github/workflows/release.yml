@@ -60,7 +60,7 @@ jobs:
             - name: Upload Icon Pack
               uses: actions/upload-artifact@v3
               with:
-                  name: com.mackenly.simpleiconsstreamdeck.streamDeckIconPack
+                  name: icon-pack-${{ needs.version.outputs.LATEST_TAG_NAME }}
                   path: ./out/com.mackenly.simpleiconsstreamdeck.streamDeckIconPack
                   if-no-files-found: error
                   retention-days: 2
@@ -95,12 +95,8 @@ jobs:
             - name: Download pack artifact
               uses: actions/download-artifact@v3
               with:
-                  name: com.mackenly.simpleiconsstreamdeck.streamDeckIconPack
-                  path: ./out/com.mackenly.simpleiconsstreamdeck.streamDeckIconPack
-
-            - name: Show directory structure
-              run: |
-                ls -R
+                  name: icon-pack-${{ needs.version.outputs.LATEST_TAG_NAME }}
+                  path: ./out
 
             - name: Create Release
               id: create_release
