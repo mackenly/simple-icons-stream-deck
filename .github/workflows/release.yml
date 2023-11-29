@@ -36,13 +36,6 @@ jobs:
             - name: Checkout Repo
               uses: actions/checkout@v3
 
-            - name: Echo variables # to test variable passing to windows runner
-              run: |
-                echo "LATEST_TAG_NAME=${{ needs.version.outputs.LATEST_TAG_NAME }}"
-                echo "LATEST_RELEASE_NAME=${{ needs.version.outputs.LATEST_RELEASE_NAME }}"
-                echo "PREVIOUS_VERSION=${{ needs.version.outputs.PREVIOUS_VERSION }}"
-                dir
-
             - name: Download latest Simple Icons release
               run: |
                 Invoke-WebRequest -Uri "https://github.com/simple-icons/simple-icons/archive/refs/tags/${{ needs.version.outputs.LATEST_TAG_NAME }}.zip" -OutFile "simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}.zip"
@@ -64,11 +57,13 @@ jobs:
                 cd ..
               shell: pwsh
 
-            - name: Show changed files for testing
-              run: |
-                dir
-                cd script
-                dir
+            - name: Upload Icon Pack
+              uses: actions/upload-artifact@v3
+              with:
+                  name: icon-pack-${{ needs.version.outputs.LATEST_TAG_NAME }}
+                  path: ./out/com.mackenly.simpleiconsstreamdeck.sdIconPack
+                  if-no-files-found: error
+                  retention-days: 2
 
     release:
         name: Create new Release
@@ -85,10 +80,30 @@ jobs:
                 sed -i "s/\"Version\": \".*\"/\"Version\": \"${{ needs.version.outputs.LATEST_TAG_NAME }}\"/g" template/manifest.json
                 sed -i 's/${{ needs.version.outputs.PREVIOUS_VERSION }}/${{ needs.version.outputs.LATEST_TAG_NAME }}/g' README.md
 
-            - name: Show changed files for testing
+            - name: Commit and push changes to manifest.json and README.md
               run: |
-                cat template/manifest.json
-                cat README.md
+                git config --local user.email "github-actions[bot]@users.noreply.github.com"
+                git config --local user.name "github-actions[bot]"
+                git add template/manifest.json
+                git add README.md
+                git commit -m "Update manifest.json and README.md to version ${{ needs.version.outputs.LATEST_TAG_NAME }}"
+                git push
 
-            # TODO: Add a step to commit the changes to manifest.json and README.md
-            # Create a new release with the new version number
+            - name: Create Release
+              id: create_release
+              uses: ncipollo/release-action@v1
+              with:
+                artifacts: |
+                  icon-pack-${{ needs.version.outputs.LATEST_TAG_NAME }}
+                allowUpdates: true
+                artifactErrorsFailBuild: true
+                body: |
+                  # Simple Icons Stream Deck Icon Pack
+                  Version ${{ needs.version.outputs.LATEST_TAG_NAME }}
+                  ${{ needs.version.outputs.LATEST_RELEASE_NAME }}
+                makeLatest: true
+                name: ${{ needs.version.outputs.LATEST_TAG_NAME }}
+                replacesArtifacts: true
+                removeArtifacts: true
+                tag: ${{ needs.version.outputs.LATEST_TAG_NAME }}
+                draft: true
