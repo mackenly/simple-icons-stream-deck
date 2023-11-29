@@ -86,26 +86,36 @@ jobs:
                 git config --local user.name "github-actions[bot]"
                 git add template/manifest.json
                 git add README.md
-                git commit -m "Update manifest.json and README.md to version ${{ needs.version.outputs.LATEST_TAG_NAME }}"
+                git commit -m "Update to version ${{ needs.version.outputs.LATEST_TAG_NAME }} - ${{ needs.version.outputs.LATEST_RELEASE_NAME }}"
                 git push
                 # tag the commit
-                git tag ${{ needs.version.outputs.LATEST_TAG_NAME }}
-                git push origin ${{ needs.version.outputs.LATEST_TAG_NAME }}
+                git tag v${{ needs.version.outputs.LATEST_TAG_NAME }}
+                git push origin v${{ needs.version.outputs.LATEST_TAG_NAME }}
+
+            - name: Download pack artifact
+              uses: actions/download-artifact@v3
+              with:
+                  name: com.mackenly.simpleiconsstreamdeck.streamDeckIconPack
+                  path: ./out/com.mackenly.simpleiconsstreamdeck.streamDeckIconPack
+
+            - name: Show directory structure
+              run: |
+                ls -R
 
             - name: Create Release
               id: create_release
               uses: ncipollo/release-action@v1
               with:
-                artifacts: "com.mackenly.simpleiconsstreamdeck.streamDeckIconPack"
+                artifacts: ./out/com.mackenly.simpleiconsstreamdeck.streamDeckIconPack
                 allowUpdates: true
                 artifactErrorsFailBuild: true
                 body: |
-                  # Simple Icons Stream Deck Icon Pack
-                  Version ${{ needs.version.outputs.LATEST_TAG_NAME }}
+                  # Simple Icons Stream Deck Icon Pack Version ${{ needs.version.outputs.LATEST_TAG_NAME }}
                   ${{ needs.version.outputs.LATEST_RELEASE_NAME }}
+                  [Simple-icons Release Notes](https://github.com/simple-icons/simple-icons/releases/tag/${{ needs.version.outputs.LATEST_TAG_NAME }})
                 makeLatest: true
-                name: ${{ needs.version.outputs.LATEST_TAG_NAME }}
+                name: v${{ needs.version.outputs.LATEST_TAG_NAME }}
                 replacesArtifacts: true
                 removeArtifacts: true
-                tag: ${{ needs.version.outputs.LATEST_TAG_NAME }}
+                tag: v${{ needs.version.outputs.LATEST_TAG_NAME }}
                 draft: true
