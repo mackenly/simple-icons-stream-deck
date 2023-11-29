@@ -88,12 +88,15 @@ jobs:
                 git add README.md
                 git commit -m "Update manifest.json and README.md to version ${{ needs.version.outputs.LATEST_TAG_NAME }}"
                 git push
+                # tag the commit
+                git tag ${{ needs.version.outputs.LATEST_TAG_NAME }}
+                git push origin ${{ needs.version.outputs.LATEST_TAG_NAME }}
 
             - name: Create Release
               id: create_release
               uses: ncipollo/release-action@v1
               with:
-                artifacts: com.mackenly.simpleiconsstreamdeck.streamDeckIconPack
+                artifacts: "com.mackenly.simpleiconsstreamdeck.streamDeckIconPack"
                 allowUpdates: true
                 artifactErrorsFailBuild: true
                 body: |
