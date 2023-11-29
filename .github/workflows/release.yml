@@ -1,6 +1,5 @@
 name: Create Release
 on:
-    push:
     workflow_dispatch:
     schedule:
         - cron: '0 9 * * 1'
@@ -114,4 +113,3 @@ jobs:
                 replacesArtifacts: true
                 removeArtifacts: true
                 tag: v${{ needs.version.outputs.LATEST_TAG_NAME }}
-                draft: true
