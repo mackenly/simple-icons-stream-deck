@@ -86,11 +86,12 @@ for i in object:
 
 # remove the old files
 try:
-    os.chmod(os.getcwd().replace("\\script", "\\out"), 0o777)
     shutil.rmtree(os.getcwd().replace("\\script", "\\out"))
     print("Removed old files.")
 except FileNotFoundError:
     print("No old files to remove, continuing...")
+except PermissionError:
+    print("Permission error on old files (they might not exist), continuing...")
 
 # create directories
 os.mkdir(os.getcwd().replace("\\script", "\\out"))
