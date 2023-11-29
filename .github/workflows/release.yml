@@ -55,16 +55,13 @@ jobs:
                 cd script
                 python main.py ./../simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}/simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }} ${{ needs.version.outputs.LATEST_TAG_NAME }}
                 cd ..
-                cd out
-                dir
-                cd ..
               shell: pwsh
 
             - name: Upload Icon Pack
               uses: actions/upload-artifact@v3
               with:
                   name: icon-pack-${{ needs.version.outputs.LATEST_TAG_NAME }}
-                  path: out/com.mackenly.simpleiconsstreamdeck.sdIconPack
+                  path: ./out/com.mackenly.simpleiconsstreamdeck.streamDeckIconPack
                   if-no-files-found: error
                   retention-days: 2
 
