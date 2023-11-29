@@ -60,7 +60,7 @@ jobs:
             - name: Upload Icon Pack
               uses: actions/upload-artifact@v3
               with:
-                  name: icon-pack-${{ needs.version.outputs.LATEST_TAG_NAME }}
+                  name: com.mackenly.simpleiconsstreamdeck.streamDeckIconPack
                   path: ./out/com.mackenly.simpleiconsstreamdeck.streamDeckIconPack
                   if-no-files-found: error
                   retention-days: 2
@@ -93,8 +93,7 @@ jobs:
               id: create_release
               uses: ncipollo/release-action@v1
               with:
-                artifacts: |
-                  icon-pack-${{ needs.version.outputs.LATEST_TAG_NAME }}
+                artifacts: com.mackenly.simpleiconsstreamdeck.streamDeckIconPack
                 allowUpdates: true
                 artifactErrorsFailBuild: true
                 body: |
