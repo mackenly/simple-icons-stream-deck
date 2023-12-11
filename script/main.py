@@ -19,30 +19,30 @@ not_allowed_chars = {
     ":": "",
     "°": "",
     " ": "",
-    "đ": 'd',
     "ã": 'a',
+    "á": 'a',
+    "đ": 'd',
     "é": 'e',
+    "è": 'e',
     "ë": 'e',
     "É": 'e',
-    "ü": 'u',
-    "Š": 's',
     "ħ": 'h',
     "ı": 'i',
     "Î": 'i',
     "ĸ": 'k',
     "ŀ": 'l',
     "ł": 'l',
+    "ř": 'r',
+    "Š": 's',
     "ß": 'ss',
     "ŧ": 't',
+    "ü": 'u',
     "Ż": 'z',
 }
 
+# Used for slugs that don't match the title and can't be normalized via the not_allowed_chars list
 slugOverrides = {
-    "Sat.1": "sat1",
-    "Warner Bros.": "warnerbros",
-    "Ferrari N.V.": "ferrarinv",
-    "del.icio.us": "delicious",
-    "Dassault Systèmes": "dassaultsystemes",
+    # nothing here right now
 }
 
 # If at least one cli parameter is set, use that as the directory
@@ -145,22 +145,26 @@ with open(data_path + "\\simple-icons.json", encoding="utf8") as json_file:
                desc="Generating output…",
                ascii=False, ncols=75):
         # check to see if title contains characters that are in the not allowed list
-        normalized_title = ""
+        normalized_slug = ""
 
-        # check to see if title is in the slugOverrides list, if so use that
-        if i["title"] in slugOverrides:
-            normalized_title = slugOverrides[i["title"]].lower()
+        # if i["slug"] exists in i
+        if "slug" in i:
+            normalized_slug = i["slug"]
         else:
-            for j in i["title"]:
-                if j in not_allowed_chars:
-                    normalized_title += not_allowed_chars[j].lower()
-                else:
-                    normalized_title += j.lower()
+            # check to see if title is in the slugOverrides list, if so use that
+            if i["title"] in slugOverrides:
+                normalized_slug = slugOverrides[i["title"]].lower()
+            else:
+                for j in i["title"]:
+                    if j in not_allowed_chars:
+                        normalized_slug += not_allowed_chars[j].lower()
+                    else:
+                        normalized_slug += j.lower()
 
         try:
             # copy icon to the icons folder
-            new_path = os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icons\\" + normalized_title + ".svg"
-            old_path = icons_path + "\\" + normalized_title + ".svg"
+            new_path = os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icons\\" + normalized_slug + ".svg"
+            old_path = icons_path + "\\" + normalized_slug + ".svg"
             shutil.copy(old_path, new_path)
         except FileNotFoundError:
             # skip if icon doesn't exist
@@ -169,7 +173,7 @@ with open(data_path + "\\simple-icons.json", encoding="utf8") as json_file:
 
         # add the icon to the out data
         out_data.append({
-            "path": normalized_title + ".svg",
+            "path": normalized_slug + ".svg",
             "name": i["title"],
             "tags": [
                 i["title"],
@@ -178,11 +182,11 @@ with open(data_path + "\\simple-icons.json", encoding="utf8") as json_file:
         })
 
         # edit the icon with the correct color
-        with open(os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icons\\" + normalized_title + ".svg", "r") as icon_file:
+        with open(os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icons\\" + normalized_slug + ".svg", "r") as icon_file:
             icon_data = icon_file.read()
             icon_data = icon_data.replace("<svg fill=\"#FF0000\" role=\"img\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">", "<svg fill=\"#" + i["hex"] + "\" role=\"img\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"  style=\"position:relative;height:576px;width:576px;\">")
             icon_data = icon_data.replace("<svg ", "<svg fill=\"#" + i["hex"] + "\" ")
-            with open(os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icons\\" + normalized_title + ".svg", "w") as icon_out:
+            with open(os.getcwd().replace("\\script", "") + "\\out\\com.mackenly.simpleiconsstreamdeck.sdIconPack\\icons\\" + normalized_slug + ".svg", "w") as icon_out:
                 icon_out.write(icon_data)
 
         # append icon title and source to the license
