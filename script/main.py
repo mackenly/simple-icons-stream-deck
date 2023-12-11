@@ -42,7 +42,7 @@ not_allowed_chars = {
 
 # Used for slugs that don't match the title and can't be normalized via the not_allowed_chars list
 slugOverrides = {
-    # nothing here right now
+    "Bakaláři": "bakalari",
 }
 
 # If at least one cli parameter is set, use that as the directory
