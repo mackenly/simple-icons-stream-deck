@@ -9,7 +9,7 @@
 
  ## Installation
  **Icon Store:**<br><br>
-Install from the Stream Deck store either on [the web here](https://apps.elgato.com/icons/com.mackenly.simpleiconsstreamdeck) or by searching for "Simple Icons".
+Install from the Stream Deck store either on [the web here](https://marketplace.elgato.com/product/simple-edbee553-243d-44d8-96bf-7d73690f3ed1) or by searching for "Simple Icons".
 <br><br>
  **Manual:**
 1. Download the latest streamDeckIconPack file from [releases](https://github.com/mackenly/simple-icons-stream-deck/releases).
