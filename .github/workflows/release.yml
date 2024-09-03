@@ -90,7 +90,7 @@ jobs:
                 git push origin v${{ needs.version.outputs.LATEST_TAG_NAME }}
 
             - name: Download pack artifact
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4.1.7
               with:
                   name: icon-pack-${{ needs.version.outputs.LATEST_TAG_NAME }}
                   path: ./out
