@@ -14,7 +14,7 @@ jobs:
             PREVIOUS_VERSION: ${{ steps.getSimpleIconsVersion.outputs.previous_version }}
         steps:
             - name: Checkout Repo
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Get Simple Icons version and release name plus previous version of icon pack
               id: getSimpleIconsVersion
@@ -33,7 +33,7 @@ jobs:
         permissions: write-all
         steps:
             - name: Checkout Repo
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Download latest Simple Icons release
               run: |
@@ -55,7 +55,7 @@ jobs:
               shell: pwsh
 
             - name: Upload Icon Pack
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: icon-pack-${{ needs.version.outputs.LATEST_TAG_NAME }}
                   path: ./out/com.mackenly.simpleiconsstreamdeck.streamDeckIconPack
@@ -70,7 +70,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout Repo
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Update manifest.json template version and README.md
               run: |
