@@ -138,7 +138,6 @@ print("Copied icon.")
 # import the json data
 with open(data_path + "\\simple-icons.json", encoding="utf8") as json_file:
     data = json.load(json_file)
-    data = data["icons"]
     # create the json file
     out_data = []
     for i in tqdm (data,
