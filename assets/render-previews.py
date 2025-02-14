@@ -14,12 +14,16 @@ def start_http_server():
 
 async def render_previews():
     async with async_playwright() as p:
-        browser = await p.chromium.launch()
-        context = await browser.new_context(
-            viewport={'width': 1280, 'height': 800},
+        browser = await p.chromium.launch(
             timeout=60000
         )
+        context = await browser.new_context(
+            viewport={'width': 1280, 'height': 800}
+        )
         page = await context.new_page()
+        
+        # Set default timeout for all operations
+        page.set_default_timeout(60000)
         
         # Setup logging for all console messages, not just errors
         page.on("console", lambda msg: logging.info(f"Browser console {msg.type}: {msg.text}"))
