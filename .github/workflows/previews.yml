@@ -19,7 +19,9 @@ jobs:
         echo "latest_tag_name=$(echo "$simple_icons_release_data" | jq -r '.tag_name')" >> $GITHUB_OUTPUT
 
   generate-previews:
+    name: Generate Previews
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     
     steps:
     - uses: actions/checkout@v4
@@ -37,12 +39,11 @@ jobs:
 
     - name: Download latest Simple Icons release
       run: |
-        Invoke-WebRequest -Uri "https://github.com/simple-icons/simple-icons/archive/refs/tags/${{ needs.version.outputs.LATEST_TAG_NAME }}.zip" -OutFile "simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}.zip"
-        shell: pwsh
+        curl -L "https://github.com/simple-icons/simple-icons/archive/refs/tags/${{ needs.version.outputs.LATEST_TAG_NAME }}.zip" -o "simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}.zip"
 
     - name: Extract Simple Icons
-      run: 7z x simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}.zip -o./simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}
-      shell: cmd
+      run: |
+        unzip "simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}.zip"
 
     - name: Move icon files
       run: |
