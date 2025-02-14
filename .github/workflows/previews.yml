@@ -4,20 +4,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  version:
-    name: Get versions and meta
-    timeout-minutes: 5
-    runs-on: ubuntu-latest
-    outputs:
-      LATEST_TAG_NAME: ${{ steps.getSimpleIconsVersion.outputs.latest_tag_name }}
-      
-    steps:
-    - name: Get Simple Icons version and release name plus previous version of icon pack
-      id: getSimpleIconsVersion
-      run: |
-        simple_icons_release_data="$(curl --retry 5 -s https://api.github.com/repos/simple-icons/simple-icons/releases/latest)"
-        echo "latest_tag_name=$(echo "$simple_icons_release_data" | jq -r '.tag_name')" >> $GITHUB_OUTPUT
-
   generate-previews:
     name: Generate Previews
     runs-on: ubuntu-latest
@@ -39,16 +25,16 @@ jobs:
 
     - name: Download latest Simple Icons release
       run: |
-        curl -L "https://github.com/simple-icons/simple-icons/archive/refs/tags/${{ needs.version.outputs.LATEST_TAG_NAME }}.zip" -o "simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}.zip"
+        curl -L "https://github.com/simple-icons/simple-icons/archive/refs/tags/14.6.0.zip" -o "simple-icons-14.6.0.zip"
 
     - name: Extract Simple Icons
       run: |
-        unzip "simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}.zip"
+        unzip "simple-icons-14.6.0.zip"
 
     - name: Move icon files
       run: |
         mkdir -p assets/icons
-        cp -r simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}/simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}/icons/* assets/icons
+        cp -r simple-icons-14.6.0/simple-icons-14.6.0/icons/* assets/icons
     
     - name: Generate previews
       run: python ./assets/render-previews.py
