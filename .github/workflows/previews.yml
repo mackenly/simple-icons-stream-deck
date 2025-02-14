@@ -2,6 +2,12 @@ name: Generate Previews
 
 on:
   workflow_dispatch:
+    inputs:
+      tag_version:
+        description: 'Simple Icons tag version'
+        required: false
+        default: '14.6.0'
+        type: string
 
 jobs:
   generate-previews:
@@ -25,16 +31,16 @@ jobs:
 
     - name: Download latest Simple Icons release
       run: |
-        curl -L "https://github.com/simple-icons/simple-icons/archive/refs/tags/14.6.0.zip" -o "simple-icons-14.6.0.zip"
+        curl -L "https://github.com/simple-icons/simple-icons/archive/refs/tags/${{ inputs.tag_version }}.zip" -o "simple-icons-${{ inputs.tag_version }}.zip"
 
     - name: Extract Simple Icons
       run: |
-        unzip "simple-icons-14.6.0.zip"
+        unzip "simple-icons-${{ inputs.tag_version }}.zip"
 
     - name: Move icon files
       run: |
         mkdir -p assets/icons
-        cp -r simple-icons-14.6.0/icons/* assets/icons
+        cp -r simple-icons-${{ inputs.tag_version }}/icons/* assets/icons
     
     - name: Generate previews
       run: python ./assets/render-previews.py
