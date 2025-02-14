@@ -1,53 +1,285 @@
 <!DOCTYPE html>
-<html lang="en">
-    <body>
-        <main>
-            <div id="file-selector">
-                <p>Utility for creating preview images.</p>
-                <input type="file" id="file" multiple>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .aspect-8-5 {
+            aspect-ratio: 8/5;
+        }
+    </style>
+</head>
+
+<body class="bg-black p-4">
+    <!-- Grid Layout -->
+    <div id="grid" data-preview="grid"
+        class="bg-gradient-to-br from-gray-900 to-gray-800 w-full aspect-8-5 flex flex-col rounded-lg shadow-xl overflow-hidden mb-8">
+        <div class="text-center py-6">
+            <h2 class="text-white text-5xl font-bold mb-2">Simple Icons Pack</h2>
+            <p class="text-gray-400 text-xl p-2">Over <b>3,200</b> Icons for Popular Brands</p>
+        </div>
+        <div class="flex-1 px-6 pb-6">
+            <div id="gridContainer" class="grid grid-cols-12 gap-3 h-full">
+                <!-- Icons will be inserted here via JavaScript -->
             </div>
-            <div class="grid-container"></div>
-        </main>
-        <style>
-            html {
-                background-color: rgb(16, 22, 45);
-                color: white;
+        </div>
+    </div>
+
+    <!-- Floating Layout -->
+    <div id="feature" data-preview="feature"
+        class="bg-gradient-to-r from-blue-900 to-purple-900 w-full aspect-8-5 flex flex-col rounded-lg shadow-xl overflow-hidden mb-8">
+        <div class="text-center py-8">
+            <h2 class="text-white text-3xl font-bold mb-2">Stream Deck Ready</h2>
+            <p class="text-gray-200">Icons for Websites and Apps You Use for Play</p>
+        </div>
+        <div class="flex-1 px-12 pb-8">
+            <div class="grid grid-cols-2 gap-8 h-full">
+                <div id="floatingTools" class="grid grid-cols-4 gap-3 bg-gray-800 bg-opacity-50 p-4 rounded-xl">
+                    <!-- Floating tools will be inserted here -->
+                </div>
+                <div id="floatingCategories" class="grid grid-rows-3 gap-3">
+                    <!-- Floating categories will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Layout -->
+    <div id="feature" data-preview="feature"
+        class="bg-gradient-to-br from-gray-900 to-gray-800 w-full aspect-8-5 flex flex-col rounded-lg shadow-xl overflow-hidden">
+        <div class="text-center py-8">
+            <h2 class="text-white text-3xl font-bold mb-2">Icons for Professionals</h2>
+            <p class="text-gray-400">Find Icons for the Tools You Use At Work</p>
+        </div>
+        <div class="flex-1 px-12 pb-8">
+            <div class="grid grid-cols-2 gap-8 h-full">
+                <div id="categories" class="grid grid-rows-3 gap-3">
+                    <!-- Categories will be inserted here -->
+                </div>
+                <div id="featuredTools" class="grid grid-cols-4 gap-3 bg-gray-800 bg-opacity-50 p-4 rounded-xl">
+                    <!-- Featured tools will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const gridIcons = [
+            { "name": "producthunt", "color": "DA552F" },
+            { "name": "envato", "color": "87E64B" },
+            { "name": "canvas", "color": "E72429" },
+            { "name": "levelsdotfyi", "color": "788B95" },
+            { "name": "googleanalytics", "color": "E37400" },
+            { "name": "starbucks", "color": "006241" },
+            { "name": "raycast", "color": "FF6363" },
+            { "name": "logitech", "color": "00B8FC" },
+            { "name": "onstar", "color": "003D7D" },
+            { "name": "dropbox", "color": "0061FF" },
+            { "name": "mqtt", "color": "660066" },
+            { "name": "okta", "color": "007DC1" },
+            { "name": "bitcoin", "color": "F7931A" },
+            { "name": "perplexity", "color": "1FB8CD" },
+            { "name": "anthropic", "color": "191919" },
+            { "name": "fandango", "color": "FF7300" },
+            { "name": "gravatar", "color": "1E8CBE" },
+            { "name": "portainer", "color": "13BEF9" },
+            { "name": "g2", "color": "FF492C" },
+            { "name": "nvidia", "color": "76B900" },
+            { "name": "formspree", "color": "E5122E" },
+            { "name": "grafana", "color": "F46800" },
+            { "name": "plausibleanalytics", "color": "5850EC" },
+            { "name": "overcast", "color": "FC7E0F" },
+            { "name": "instacart", "color": "43B02A" },
+            { "name": "zendesk", "color": "03363D" },
+            { "name": "cnn", "color": "CC0000" },
+            { "name": "fox", "color": "000000" },
+            { "name": "bitwarden", "color": "175DDC" },
+            { "name": "motorola", "color": "E1140A" },
+            { "name": "shell", "color": "FFD500" },
+            { "name": "cashapp", "color": "00C244" },
+            { "name": "1Password", "color": "3B66BC" },
+            { "name": "2K", "color": "DD0700" },
+            { "name": "3M", "color": "FF0000" },
+            { "name": "500px", "color": "222222" },
+            { "name": "9GAG", "color": "000000" },
+            { "name": "AccuWeather", "color": "FF6600" },
+            { "name": "Adidas", "color": "000000" },
+            { "name": "Airbnb", "color": "FF5A5F" },
+            { "name": "Acer", "color": "83B81A" },
+            { "name": "Amazon", "color": "FF9900" },
+            { "name": "Audi", "color": "BB0A30" },
+            { "name": "Afterpay", "color": "B2FCE4" },
+            { "name": "AliExpress", "color": "FF4747" },
+            { "name": "AmericanAirlines", "color": "0078D2" },
+            { "name": "AlbertHeijn", "color": "04ACE6" },
+            { "name": "AlibabaCloud", "color": "FF6A00" },
+            { "name": "Alipay", "color": "1677FF" },
+            { "name": "AmericanExpress", "color": "2E77BC" },
+            { "name": "Apple", "color": "000000" },
+            { "name": "travisci", "color": "3EAAAF" },
+            { "name": "waze", "color": "33CCFF" },
+            { "name": "facebooklive", "color": "ED4242" },
+            { "name": "palantir", "color": "101113" },
+            { "name": "dwavesystems", "color": "008CD7" },
+            { "name": "androidauto", "color": "3DDC84" },
+            { "name": "laravel", "color": "FF2D20" },
+            { "name": "1dot1dot1dot1", "color": "221E68" }
+        ]
+            ;
+
+        const floatingIcons = [
+            { "name": "1001Tracklists", "color": "40AEF0" },
+            { "name": "2K", "color": "DD0700" },
+            { "name": "Activision", "color": "000000" },
+            { "name": "AppleArcade", "color": "000000" },
+            { "name": 'roku', "color": '6F2DA8' },
+            { "name": "AppleMusic", "color": "FA243C" },
+            { "name": "tiktok", "color": "000000" },
+            { "name": "Audible", "color": "F8991C" },
+            { "name": "Atari", "color": "E4202E" },
+            { "name": "ArtStation", "color": "13AFF0" },
+            { "name": "spotify", "color": "1ED760" },
+            { "name": "safari", "color": "006CFF" },
+            { "name": "ApplePodcasts", "color": "9933CC" },
+            { "name": "Arc", "color": "FCBFBD" },
+            { "name": "ArcGIS", "color": "2C7AC3" },
+            { "name": "Audiobookshelf", "color": "82612C" },
+        ]
+            ;
+
+        const floatingCategoryData = [
+            { name: 'Entertainment', icons: [{ name: 'netflix', color: 'E50914' }, { "name": "AppleTV", "color": "000000" }, { name: 'paramountplus', color: '0063E5' }, { name: 'primevideo', color: '00A8E1' }] },
+            { name: 'Gaming', icons: [{ name: 'steam', color: '000000' }, { name: 'twitch', color: '9146FF' }, { name: 'discord', color: '5865F2' }, { name: 'epicgames', color: '313131' }] },
+            { name: 'Social Media', icons: [{ name: 'x', color: '000000' }, { name: 'instagram', color: 'E4405F' }, { name: 'facebook', color: '1877F2' }, { name: 'snapchat', color: 'FFFC00' }] }
+        ];
+
+        const toolIcons = [
+            { "name": "DotNET", "color": "512BD4" },
+            { "name": "AffinityDesigner", "color": "134881" },
+            { "name": "Accenture", "color": "A100FF" },
+            { "name": "Airtable", "color": "18BFFF" },
+            { "name": "amazonwebservices", "color": "232F3E" },
+            { "name": "AutoCAD", "color": "E51050" },
+            { "name": "1password", "color": "3B66BC" },
+            { "name": "7zip", "color": "000000" },
+            { "name": "googleforms", "color": "7248B9" },
+            { "name": "linux", "color": "FCC624" },
+            { "name": "Apache", "color": "D22128" },
+            { "name": "AutodeskMaya", "color": "37A5CC" },
+            { "name": "Akamai", "color": "0096D6" },
+            { "name": "cloudflare", "color": "F38020" },
+            { "name": "zoom", "color": "0B5CFF" },
+            { "name": "filezilla", "color": "BF0000" }
+        ]
+            ;
+
+        const categoryData = [
+            { name: 'Design Tools', icons: [{ name: 'figma', color: 'F24E1E' }, { name: 'unsplash', color: '000000' }, { name: 'canva', color: '00C4CC' }, { name: 'sketch', color: 'F7B500' }] },
+            { name: 'Development', icons: [{ name: 'javascript', color: 'F7DF1E' }, { name: 'github', color: '181717' }, { name: 'gitlab', color: 'FC6D26' }, { name: 'npm', color: 'CB3837' }] },
+            { name: 'Productivity', icons: [{ name: 'slack', color: '4A154B' }, { name: 'notion', color: '000000' }, { name: 'loom', color: '625DF5' }, { name: 'asana', color: '273347' }] }
+        ];
+
+
+        // Helper function to create an icon element
+        async function createIconElement(iconName, hexColor, size = 12) {
+            const div = document.createElement('div');
+            div.className = `aspect-square bg-gray-700 p-2 rounded-lg flex items-center justify-center hover:bg-gray-600 transition-colors`;
+
+            try {
+                iconName = iconName.toLowerCase();
+                const response = await fetch(`https://unpkg.com/simple-icons@14.6.0/icons/${iconName}.svg`);
+                const svgText = await response.text();
+
+                // Create a wrapper div to safely handle SVG innerHTML
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = svgText;
+                const svg = wrapper.querySelector('svg');
+
+                // Apply styles to SVG
+                svg.style.width = `${size * 4}px`;
+                svg.style.height = `${size * 4}px`;
+                svg.style.fill = `#${hexColor}`;
+
+                div.appendChild(svg);
+            } catch (error) {
+                console.error(`Failed to load icon: ${iconName}`, error);
+                // Fallback text if icon fails to load
+                div.innerHTML = iconName;
             }
-            .grid-container {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-                grid-gap: 20px;
-                padding: 75px 120px;
+
+            return div;
+        }
+
+        // Modified population functions to handle async icon creation
+        async function populateContainer(container, icons) {
+            for (const icon of icons) {
+                const element = await createIconElement(icon.name, icon.color);
+                container.appendChild(element);
             }
-            .grid-container img {
-                background-color: rgb(32, 36, 51);
-                fill: rgb(197, 197, 197);
-                border-radius: 10px;
-                padding: 10px;
+        }
+
+        // Main async function to handle all populations
+        async function initializeIcons() {
+            // Populate grid layout
+            await populateContainer(gridContainer, gridIcons);
+
+            // Add "and more" element
+            const andMore = document.createElement('div');
+            andMore.className = 'aspect-square bg-gray-700 rounded-lg flex items-center justify-center hover:bg-gray-600 transition-colors';
+            andMore.innerHTML = '<span class="text-white text-xs font-medium">and more...</span>';
+            gridContainer.appendChild(andMore);
+
+            // Populate floating tools
+            await populateContainer(floatingTools, floatingIcons);
+
+            // Populate floating categories
+            for (const category of floatingCategoryData) {
+                const div = document.createElement('div');
+                div.className = 'bg-gray-800 bg-opacity-50 p-4 rounded-xl';
+
+                const title = document.createElement('div');
+                title.className = 'text-white text-sm font-medium mb-3';
+                title.textContent = category.name;
+                div.appendChild(title);
+
+                const iconGrid = document.createElement('div');
+                iconGrid.className = 'grid grid-cols-4 gap-3';
+
+                await populateContainer(iconGrid, category.icons);
+                div.appendChild(iconGrid);
+                floatingCategories.appendChild(div);
             }
-        </style>
-        <script>
-            const fileInput = document.getElementById('file');
-            fileInput.addEventListener('change', function(e) {
-                const files = e.target.files;
-                for (let i = 0; i < files.length; i++) {
-                    if (i >= 272) {
-                        break;
-                    } else if (i < 200) {
-                        continue;
-                    }
-                    const file = files[i];
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const data = e.target.result;
-                        const img = document.createElement('img');
-                        img.src = data;
-                        document.querySelector('.grid-container').appendChild(img);
-                    };
-                    document.getElementById("file-selector").style.display = "none";
-                    reader.readAsDataURL(file);
-                }
-            });
-        </script>
-    </body>
+
+            // Populate featured tools
+            await populateContainer(featuredTools, toolIcons);
+
+            // Populate categories
+            for (const category of categoryData) {
+                const div = document.createElement('div');
+                div.className = 'bg-gray-800 bg-opacity-50 p-4 rounded-xl';
+
+                const title = document.createElement('div');
+                title.className = 'text-white text-sm font-medium mb-3';
+                title.textContent = category.name;
+                div.appendChild(title);
+
+                const iconGrid = document.createElement('div');
+                iconGrid.className = 'grid grid-cols-4 gap-3';
+
+                await populateContainer(iconGrid, category.icons);
+                div.appendChild(iconGrid);
+                categories.appendChild(div);
+            }
+
+            // Signal that the page is ready
+            document.body.setAttribute('data-preview', 'ready');
+        }
+
+        // Start the icon population
+        initializeIcons();
+    </script>
+</body>
+
 </html>
