@@ -4,6 +4,20 @@ on:
   workflow_dispatch:
 
 jobs:
+  version:
+    name: Get versions and meta
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    outputs:
+      LATEST_TAG_NAME: ${{ steps.getSimpleIconsVersion.outputs.latest_tag_name }}
+      
+    steps:
+    - name: Get Simple Icons version and release name plus previous version of icon pack
+      id: getSimpleIconsVersion
+      run: |
+        simple_icons_release_data="$(curl --retry 5 -s https://api.github.com/repos/simple-icons/simple-icons/releases/latest)"
+        echo "latest_tag_name=$(echo "$simple_icons_release_data" | jq -r '.tag_name')" >> $GITHUB_OUTPUT
+
   generate-previews:
     runs-on: ubuntu-latest
     
@@ -20,6 +34,20 @@ jobs:
         python -m pip install --upgrade pip
         pip install playwright
         playwright install chromium
+
+    - name: Download latest Simple Icons release
+      run: |
+        Invoke-WebRequest -Uri "https://github.com/simple-icons/simple-icons/archive/refs/tags/${{ needs.version.outputs.LATEST_TAG_NAME }}.zip" -OutFile "simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}.zip"
+        shell: pwsh
+
+    - name: Extract Simple Icons
+      run: 7z x simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}.zip -o./simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}
+      shell: cmd
+
+    - name: Move icon files
+      run: |
+        mkdir -p assets/icons
+        cp -r simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}/simple-icons-${{ needs.version.outputs.LATEST_TAG_NAME }}/icons/* assets/icons
     
     - name: Generate previews
       run: python ./assets/render-previews.py

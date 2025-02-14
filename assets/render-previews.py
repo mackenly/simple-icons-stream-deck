@@ -15,42 +15,34 @@ def start_http_server():
 async def render_previews():
     async with async_playwright() as p:
         browser = await p.chromium.launch()
-        page = await browser.new_page()
+        context = await browser.new_context(
+            viewport={'width': 1280, 'height': 800},
+            timeout=60000
+        )
+        page = await context.new_page()
         
-        # Increase viewport size to ensure all content is visible
-        await page.set_viewport_size({"width": 1280, "height": 800})
+        # Setup logging for all console messages, not just errors
+        page.on("console", lambda msg: logging.info(f"Browser console {msg.type}: {msg.text}"))
         
-        # Setup console error logging
-        page.on("console", lambda msg: logging.error(msg.text) if msg.type == "error" else None)
-        
-        # Start local HTTP server in a separate thread
+        logging.info("Starting HTTP server...")
         server_thread = threading.Thread(target=start_http_server, daemon=True)
         server_thread.start()
-        time.sleep(3)  # Give the server a moment to start
+        time.sleep(3)
         
-        # Create previews directory if it doesn't exist
         os.makedirs('assets/previews', exist_ok=True)
         
         try:
-            await page.goto('http://localhost:8000/assets/preview.html', wait_until='networkidle')
+            logging.info("Navigating to preview page...")
+            # Use domcontentloaded instead of networkidle, with explicit timeout
+            await page.goto(
+                'http://localhost:8000/assets/preview.html',
+                wait_until='domcontentloaded',
+                timeout=60000
+            )
             
-            # Wait for JavaScript to execute
-            await page.wait_for_load_state('domcontentloaded')
-            await page.wait_for_timeout(2000)  # Wait for JS animations
-            
-            # Wait for all images to load
-            await page.evaluate("""
-                async () => {
-                    const images = document.querySelectorAll('img');
-                    await Promise.all(Array.from(images).map(img => {
-                        if (img.complete) return;
-                        return new Promise((resolve, reject) => {
-                            img.addEventListener('load', resolve);
-                            img.addEventListener('error', reject);
-                        });
-                    }));
-                }
-            """)
+            logging.info("Waiting for page to stabilize...")
+            await page.wait_for_load_state('load', timeout=60000)
+            await page.wait_for_timeout(5000)  # Increased wait time
             
             preview_configs = [
                 {'name': 'grid', 'selector': '[data-preview="grid"]', 'number': '1'},
@@ -71,11 +63,17 @@ async def render_previews():
             
         except Exception as e:
             logging.error(f'Error during preview generation: {str(e)}')
+            # Add error screenshot for debugging
+            await page.screenshot(path='assets/previews/error.png')
         finally:
             await browser.close()
 
 def main():
-    logging.basicConfig(level=logging.INFO)
+    # Set more detailed logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s'
+    )
     # Check if preview.html exists relative to repo root
     if not os.path.exists('assets/preview.html'):
         raise FileNotFoundError("assets/preview.html not found")

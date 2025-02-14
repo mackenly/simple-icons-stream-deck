@@ -189,7 +189,7 @@
 
             try {
                 iconName = iconName.toLowerCase();
-                const response = await fetch(`https://unpkg.com/simple-icons@14.6.0/icons/${iconName}.svg`);
+                const response = await fetch(`./icons/${iconName}.svg`);
                 const svgText = await response.text();
 
                 // Create a wrapper div to safely handle SVG innerHTML
