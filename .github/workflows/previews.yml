@@ -34,7 +34,7 @@ jobs:
     - name: Move icon files
       run: |
         mkdir -p assets/icons
-        cp -r simple-icons-14.6.0/simple-icons-14.6.0/icons/* assets/icons
+        cp -r simple-icons-14.6.0/icons/* assets/icons
     
     - name: Generate previews
       run: python ./assets/render-previews.py
