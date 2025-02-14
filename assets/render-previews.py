@@ -32,8 +32,8 @@ async def render_previews():
         # Take screenshots of each preview
         preview_configs = [
             {'name': 'grid', 'selector': '[data-preview="grid"]'},
-            {'name': 'floating', 'selector': '[data-preview="feature"]:nth-of-type(1)'},
-            {'name': 'feature', 'selector': '[data-preview="feature"]:nth-of-type(2)'}
+            {'name': 'floating', 'selector': '[data-preview="floating"]'},
+            {'name': 'feature', 'selector': '[data-preview="feature"]'}
         ]
         
         for config in preview_configs:
