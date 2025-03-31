@@ -111,3 +111,12 @@ jobs:
                 replacesArtifacts: true
                 removeArtifacts: true
                 tag: v${{ needs.version.outputs.LATEST_TAG_NAME }}
+
+            - name: Trigger deployment webhook
+              run: |
+                response=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.DEPLOY_WEBHOOK }})
+                if [ "$response" -ne 204 ]; then
+                  echo "Expected response code 204, got $response"
+                  exit 1
+                fi
+                echo "Deployment webhook triggered successfully"
