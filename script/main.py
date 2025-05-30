@@ -74,7 +74,7 @@ object = os.scandir(directory)
 data_path = ""
 icons_path = ""
 for i in object:
-    if i.name == "_data" or i.name == "data":
+    if i.name in {"_data", "data"}:
         data_path = i.path
     elif i.name == "icons":
         icons_path = i.path
