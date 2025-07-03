@@ -123,9 +123,22 @@ jobs:
 
             - name: Trigger deployment webhook
               run: |
-                response=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.DEPLOY_WEBHOOK }})
-                if [ "$response" -ne 204 ]; then
-                  echo "Expected response code 204, got $response"
-                  exit 1
+                if [ -z "${{ secrets.DEPLOY_WEBHOOK }}" ]; then
+                  echo "DEPLOY_WEBHOOK secret is not set, skipping webhook trigger"
+                  exit 0
                 fi
-                echo "Deployment webhook triggered successfully"
+                
+                response=$(curl -s -o /dev/null -w "%{http_code}" -H "auth: ${{ secrets.AUTH_KEY }}" "${{ secrets.DEPLOY_WEBHOOK }}" || echo "CURL_FAILED")
+                
+                if [ "$response" = "CURL_FAILED" ]; then
+                  echo "Failed to execute webhook request"
+                  exit 1
+                else
+                  echo "Webhook response code: $response"
+                  if [ "$response" -eq 204 ] || [ "$response" -eq 200 ]; then
+                    echo "Deployment webhook triggered successfully"
+                  else
+                    echo "Unexpected response code from webhook"
+                    exit 1
+                  fi
+                fi
