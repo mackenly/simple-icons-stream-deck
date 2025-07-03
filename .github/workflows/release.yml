@@ -19,9 +19,18 @@ jobs:
             - name: Get Simple Icons version and release name plus previous version of icon pack
               id: getSimpleIconsVersion
               run: |
-                simple_icons_release_data="$(curl --retry 5 -s https://api.github.com/repos/simple-icons/simple-icons/releases/latest)"
-                echo "latest_tag_name=$(echo "$simple_icons_release_data" | jq -r '.tag_name')" >> $GITHUB_OUTPUT
-                echo "latest_release_name=$(echo "$simple_icons_release_data" | jq -r '.name')" >> $GITHUB_OUTPUT
+                simple_icons_release_data="$(curl --retry 5 -s -f https://api.github.com/repos/simple-icons/simple-icons/releases/latest || echo 'API_FAILED')"
+                if [ "$simple_icons_release_data" = "API_FAILED" ]; then
+                  echo "Failed to fetch Simple Icons release data"
+                  exit 1
+                fi
+                echo "API Response: $simple_icons_release_data"
+                latest_tag=$(echo "$simple_icons_release_data" | jq -r '.tag_name')
+                latest_name=$(echo "$simple_icons_release_data" | jq -r '.name')
+                echo "Extracted tag: $latest_tag"
+                echo "Extracted name: $latest_name"
+                echo "latest_tag_name=$latest_tag" >> $GITHUB_OUTPUT
+                echo "latest_release_name=$latest_name" >> $GITHUB_OUTPUT
                 echo "previous_version=$(jq -r '.Version' template/manifest.json)" >> $GITHUB_OUTPUT
 
     build:
